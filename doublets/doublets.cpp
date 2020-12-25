@@ -98,8 +98,9 @@ bool is_repeat(const char* word, string* sChain, int index){
   
 }
 
-bool valid_chain(const char** chain){
+bool valid_chain(const char** chain, int count){
   int chain_length = count_word(chain);
+  if ( count != 0 ) chain_length  = count;
   int word_length = count_word(chain[0]);
   string sChain[chain_length];
   
@@ -109,14 +110,22 @@ bool valid_chain(const char** chain){
 
     // Step 2: Compare successive words, to make sure that only 1 word differs
     if ( i == chain_length - 1 && !is_repeat(chain[i], sChain, i)) return true;
-    if ( !valid_step(chain[i], chain[i+1]) || is_repeat(chain[i], sChain, i)) return false;  
+
+    if (is_repeat(chain[i], sChain, i)) return false;
+
+    if ( i < chain_length - 1){
+      if ( !valid_step(chain[i], chain[i+1])) {
+	//cout << chain[i] << " " << chain[i+1] << endl;
+	return false;  
+      }
+    }
   }
   
   return true;
 
 }
 
-void print_word(char* word, int length){
+void print_word(const char* word, int length){
 
   for ( int i = 0; i < length; i++){
     cout << word[i];
@@ -135,50 +144,73 @@ bool is_same_word(const char* start, const char* end){
   
 }
 
-bool find_chain(const char* start, const char* end, const char** chain, int max_steps){
-  int word_length = count_word(start);
-  char next[word_length+1];
-  static int count(0);
+bool find_chain(const char* start, const char* end2, const char** chain, int max_steps, int count){
+  int start_length = count_word(start);
+  int end_length = count_word(end2);
+  char* end = new char[end_length];
+
+  for ( int i = 0; i < end_length+1; i++) end[i] = end2[i];
+    
+  if ( start_length == 0 && end_length == 0 ) return true;
+  if ( start_length == 0 || end_length == 0 ) return false;
+
+  // add start word into next index in chain
   if ( count == 0 ){
     chain[count] = start;
+    chain[end_length] = end2;
+    /*int chain_length = count_word(chain);
+    for ( int i = 0; i < chain_length; i++) {
+      chain[i] = nullptr;
+    }*/
     count++;
   }
-  else if ( !is_same_word(start, chain[count-1]) ) {
-      chain[count] = start;
-      count++;
-  }
-  
-  if ( max_steps < 0 ) return false;
-  if ( max_steps == 0 && is_same_word(start, end) && valid_chain(chain)) return true;
+
   if ( is_same_word(start, end) && valid_chain(chain) ) return true;
+  if ( max_steps == 0 && is_same_word(start, end) && valid_chain(chain)) return true; 
+  if ( max_steps <= 0 ) return false;
+  if ( !valid_chain(chain, count) ) return false;
   
-  for ( int i = 0; i <= word_length; i++){
+  // initialise next word
+  char* next = new char[start_length+1];
+  for ( int i = 0; i < start_length+1; i++){
+    if ( i == start_length ) {
+      next[start_length] = '\0';  // c-string terminated character
+      break;
+    }
     next[i] = start[i];
   }
   
-  for ( int x = 1; x < 26; x++){
-    for ( int y = 0; y < word_length; y++){
+  // find next word
+  for ( int x = 1; x < 26; x++){ // for each alphabet from A - Z
+    for ( int y = 0; y < start_length; y++){ // for each letter in the word
       char temp = next[y];
       int next_char;
 
       if ( next[y] + x > 90) next_char =  next[y] + x - 90 + 64;
       else next_char = next[y] + x;
-      //print_word(next, word_length);
+      //print_word(next, start_length);
       //cout << " " << next_char << " ";
 
-      next[y] = static_cast<char>(next_char);
+      next[y] = static_cast<char>(next_char); // change alphabet
 
-      //print_word(next, word_length);
+      //print_word(next, start_length);
       //cout << endl;
       if ( valid_step(start, next) ) {
-	chain[count] = next;
+	chain[count] = next;	
+	//print_word(next, start_length);
+	/*
+	if ( count == 1 )  cout<<"      step: " << count << " " << max_steps << endl;
+	else if ( count == 2)  cout << "   step: " << count << " " << max_steps << endl;
+	else cout << "step: " << count << " " <<max_steps<< endl;
+	*/
 	count++;
-	print_word(next, word_length);
-	cout << endl;
-	if ( find_chain(next, end, chain, max_steps-1) ) {
-	  cout  << next << " " << count << endl;
+
+	if ( find_chain(next, end, chain, max_steps-1, count) ) {
+	  //cout << count << endl;
 	  return true;
 	}
+
+	//cout << chain[count] << endl;
 	count--;
       }
       next[y] = temp;

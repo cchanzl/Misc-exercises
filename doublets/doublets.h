@@ -9,8 +9,8 @@ bool dictionary_search(const char *word);
 /* add your function prototypes here */
 bool valid_step(const char* start, const char* end);
 bool display_chain(const char** chain, ostream& o);
-bool valid_chain(const char** chain);
-bool find_chain(const char* start, const char* end, const char** chain, int max_steps);
+bool valid_chain(const char** chain, int count = 0);
+bool find_chain(const char* start, const char* end, const char** chain, int max_steps, int count = 0);
 
 int count_word(const char* word);
 int count_word(const char** word);

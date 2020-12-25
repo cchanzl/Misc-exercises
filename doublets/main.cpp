@@ -80,7 +80,7 @@ int main()
   if (success)
     display_chain(answer, cout);
   cout << endl;
-  
+    
   // can you turn a HARD problem into an EASY one in up to 5 steps 
   success = find_chain("HARD", "EASY", answer, 5);
   cout << (success ? "Found" : "Could not find") << " a chain from 'HARD' to 'EASY' with up to 5 steps"<< endl;
@@ -117,6 +117,6 @@ int main()
   if (success)
     display_chain(answer, cout);
   cout << endl;
-
+  
   return 0;
 }
