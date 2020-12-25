@@ -26,8 +26,6 @@ void reverse(string str1, char str2[]){
     str2[count] = *(letter + length - count - 1);
     count++;
   }
- 
-
 }
 
 string copy_str(const string original, int start, const int end){
@@ -94,7 +92,32 @@ bool palindrome(string sentence){
   return compare(sentence, palindrome);  
 }
 
-// sort from A to Z
+/*
+// binary search for index to insert alphabet
+int locate(vector<char> str_copy, char alphabet){
+  int head = 0;
+  int tail = std::count(str_copy, str_copy.size());
+  cout << "Tail is at " << tail << endl;
+  while ( head < tail ) {
+    int mid = ( head + tail ) / 2;
+    if ( str_copy[mid] < alphabet ) head = mid + 1;
+    else if ( str_copy[mid] == alphabet ) return mid;
+    else tail = mid;
+  }
+  
+  return head;
+}
+
+void insert(vector<char>& str_copy, char alphabet){
+  for ( int i = str_copy.size(); i > index; i--){
+    str_copy[i] = str_copy[i-1];
+  }
+
+  str_copy[index] = alphabet;
+
+}*/
+
+// sort string from A to Z, ignoring non-alphabets
 string sort_str(string str){
   string copied = "";
   int length = static_cast<int>(str.length());
@@ -110,8 +133,10 @@ string sort_str(string str){
     }
 
     char alphabet = toupper(*strPtr);
-
+    //int index = locate(str_copy, alphabet);
+    //cout << index << endl;
     str_copy.push_back(alphabet);
+    //insert(str_copy, alphabet, index);
     strPtr++;
     continue;
   }
