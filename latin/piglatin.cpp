@@ -109,9 +109,9 @@ void translateStream(ifstream& file, ostream& o){
     
     if ( ispunct(character) || isspace(character) ) {
       if ( count != 0 ) {
-	word[count] = '\0';
+	word[count] = '\0'; //add null terminated char to end of array
 	string english(word); //convert char array to string
-	translateWord(english, translated);
+	translateWord(english, translated); //translate to piglatin
 	o << translated;
       }
       
@@ -119,7 +119,8 @@ void translateStream(ifstream& file, ostream& o){
       translateStream(file, o);
       return;
     }
-      
+
+    //if it is a word, continue reading until a punctuation
     word[count] = character;
     count++;
   }  
