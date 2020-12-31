@@ -50,7 +50,6 @@ void text_to_binary(string str, char* encoded, int count){
 }
 
 void binary_to_text(string str, char* text, int count){
-
   
   const char* binary = str.c_str();
 
@@ -59,21 +58,23 @@ void binary_to_text(string str, char* text, int count){
   
   // clear encoded array
   if ( count == 0){
-    for ( int i = 0; i < 9; i++) text[i] = '\0';
+    for ( int i = 0; i < 32; i++) text[i] = '\0';
   }
 
   // encoding
   char bin[8];
   for ( int i = 0; i < 8; i++){
     bin[i] = *(binary+i);
+    //cout << bin[i];
   }
+  //cout << endl;
 
   //cout << binary_to_ascii(bin) << endl;
   text[count] = binary_to_ascii(bin);
+  count++;
   
   // next loop
-  binary_to_text(binary+8, text, count+1);
-  
+  binary_to_text(binary+8, text, count);  
 
 }
 
@@ -148,17 +149,13 @@ int decode(string received, char* decoded, int error, int count){
 
   // break condition
   if ( *binary == '\0' ) return error;
-
+  
   // clear correct array
-  if ( count == 0){
-    for ( int i = 0; i < 512; i++) decoded[i] = '\0';
-  }
-
+  if ( count == 0) for ( int i = 0; i < 512; i++) decoded[i] = '\0';
+  
   // retrieving 7 bit
   char bin[7];
-  for ( int i = 0; i < 7; i++){
-    bin[i] = *(binary+i);
-  }
+  for ( int i = 0; i < 7; i++) bin[i] = *(binary+i);
 
   // calculate parity
   char p1 = parity(bin[3], bin[4], bin[5], bin[6]);  
@@ -167,12 +164,11 @@ int decode(string received, char* decoded, int error, int count){
 
   // if errors are present
   if ( p1 == '1' || p2 == '1' || p3 == '1') {
-    char pos[3] = {p1, p2, p3};
 
     // convert position to integers
-    int one = static_cast<int>(pos[0]) - 48;
-    int two = static_cast<int>(pos[1]) - 48;
-    int three = static_cast<int>(pos[2]) - 48;
+    int one = static_cast<int>(p1) - 48;
+    int two = static_cast<int>(p2) - 48;
+    int three = static_cast<int>(p3) - 48;
     int position = one*(4) + two*(2) + three; 
     // cout << one << two << three << " " << position << endl;
     if ( bin[position-1] == '1' ) bin[position-1] = '0';
