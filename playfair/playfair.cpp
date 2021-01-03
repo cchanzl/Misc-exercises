@@ -38,10 +38,7 @@ void grid(string codeword, char square[6][6]){
   // alphabets for from 0 to 25 and numeric goes from 26 to 35
   int total_char = square_length * square_length;
   int alphabet[total_char];
-  for ( int i = 0; i < total_char; i++) {
-    alphabet[i] = i+1;
-    //cout << alphabet[i] << endl;
-  }
+  for ( int i = 0; i < total_char; i++) alphabet[i] = i+1;
 
   // reset square[6][6]
   for ( int r = 0; r < square_length; r++){
@@ -144,7 +141,8 @@ void bigram(char square[6][6], char inchar1, char inchar2, char& outchar1, char&
 void encode(char square[6][6], string prepared, char* encoded, int count){
 
   const char* letter = prepared.c_str();
-
+  int no_of_letters(2);
+  
   // stop recursion
   if ( *letter == '\0' ) return;
   
@@ -153,16 +151,19 @@ void encode(char square[6][6], string prepared, char* encoded, int count){
     for ( int i = 0; i < 100; i++ ) encoded[i] = '\0';
   }
   
-  // encode two char
+  // encode current two char
   bigram(square, *letter, *(letter+1), *encoded, *(encoded+1));
-  encode(square, letter+2, encoded+2, 1); 
+
+  // encode next two char
+  encode(square, letter + no_of_letters, encoded + no_of_letters, 1); 
 
 }
 
+// Function to decode a Playfair encoded message
 void decode(char square[6][6], string encoded, char* decoded, int count){
   
   const char* letter = encoded.c_str();
-
+  
   // stop recursion
   if ( *letter == '\0' ) return;
   
@@ -179,9 +180,11 @@ void decode(char square[6][6], string encoded, char* decoded, int count){
   obtain_rc(square, *letter, row1, col1);
   obtain_rc(square, *(letter+1), row2, col2);
   
-  // decode two char
+  // decode current two char
   if ( col1 == col2 ) bigram(square, *letter, *(letter+1), *decoded, *(decoded+1));
   else bigram(square, *(letter+1), *letter, *decoded, *(decoded+1));
+
+  // decode next two char
   encode(square, letter+2, decoded+2, 1); 
   
 }
