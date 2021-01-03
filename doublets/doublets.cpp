@@ -197,8 +197,8 @@ bool find_chain(const char* start, const char* end2, const char** chain, int max
       //cout << endl;
       if ( valid_step(start, next) ) {
 	chain[count] = next;	
-	//print_word(next, start_length);
 	/*
+	print_word(next, start_length);
 	if ( count == 1 )  cout<<"      step: " << count << " " << max_steps << endl;
 	else if ( count == 2)  cout << "   step: " << count << " " << max_steps << endl;
 	else cout << "step: " << count << " " <<max_steps<< endl;

@@ -45,8 +45,7 @@ void text_to_binary(string str, char* encoded, int count){
   ascii_to_binary(*alphabet, encoded);
 
   // next loop
-  text_to_binary(alphabet+1, encoded+8, count+8);
-  
+  text_to_binary(alphabet+1, encoded+8, count+8);  
 }
 
 void binary_to_text(string str, char* text, int count){
@@ -63,11 +62,7 @@ void binary_to_text(string str, char* text, int count){
 
   // encoding
   char bin[8];
-  for ( int i = 0; i < 8; i++){
-    bin[i] = *(binary+i);
-    //cout << bin[i];
-  }
-  //cout << endl;
+  for ( int i = 0; i < 8; i++) bin[i] = *(binary+i);
 
   //cout << binary_to_ascii(bin) << endl;
   text[count] = binary_to_ascii(bin);
@@ -75,7 +70,6 @@ void binary_to_text(string str, char* text, int count){
   
   // next loop
   binary_to_text(binary+8, text, count);  
-
 }
 
 char parity(char c1, char c2, char c3){
@@ -103,10 +97,8 @@ void add_error_correction(string data, char* corrected, int count){
 
   // retrieving 4 bit
   char bin[4];
-  for ( int i = 0; i < 4; i++){
-    bin[i] = *(binary+i);
-  }
-
+  for ( int i = 0; i < 4; i++) bin[i] = *(binary+i);
+  
   // calculate parity
   char c1 = parity(bin[0], bin[1], bin[3]);  
   char c2 = parity(bin[0], bin[2], bin[3]);
@@ -186,7 +178,5 @@ int decode(string received, char* decoded, int error, int count){
   //cout << bin[4] << bin[5] << bin[6] << bin[7] << endl;
   //cout << bin[2] << bin[4] << bin[5] << bin[6] << endl;;
   
-  return decode(binary+7, decoded, error, count+4);
-
-  
+  return decode(binary+7, decoded, error, count+4);  
 }
