@@ -103,11 +103,10 @@ void obtain_rc(char square[6][6], const char inchar, int& row, int& col){
   // find coordinates for inchar1 and inchar2
   for ( int r = 0; r < 6; r++){
     for ( int c = 0; c < 6; c++){
-
       if ( square[r][c] == inchar ){
 	row = r;
 	col = c;
-	break;
+	return;
       }
     }
   }
@@ -124,7 +123,7 @@ void bigram(char square[6][6], char inchar1, char inchar2, char& outchar1, char&
 
   // check for alpha numeric
   if ( !isalnum(inchar1) || !isalnum(inchar2) ) {
-    cerr << inchar1 << " or " << inchar2 << " is not alpha numeric!" << endl;
+    cerr << inchar1 << " or " << inchar2 << " is not alphanumeric!" << endl;
     return;
   }
     
@@ -143,7 +142,7 @@ void encode(char square[6][6], string prepared, char* encoded, int count){
   const char* letter = prepared.c_str();
   int no_of_letters(2);
   
-  // stop recursion
+  // stop recursion when null terminating character is reached
   if ( *letter == '\0' ) return;
   
   // reset encoded array
@@ -164,7 +163,7 @@ void decode(char square[6][6], string encoded, char* decoded, int count){
   
   const char* letter = encoded.c_str();
   
-  // stop recursion
+  // stop recursion when null terminating character is reached
   if ( *letter == '\0' ) return;
   
   // reset decoded array
