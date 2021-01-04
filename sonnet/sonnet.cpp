@@ -127,7 +127,7 @@ int count_words(string line){
 
   const char* letter = line.c_str();
   char output[512];
-  int count(0);
+   int count(0);
 
   for ( int i = 1; i < 512; i++){
     if ( get_word(letter, i, output) ) count ++;
