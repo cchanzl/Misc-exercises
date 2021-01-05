@@ -1,8 +1,10 @@
+#include <algorithm> // std::random_shuffle
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <cassert>
 #include <cstring>
+#include <vector>
 
 using namespace std;
 
@@ -125,7 +127,7 @@ bool next_step(const char direction, char** maze, int& row, int& col, const int 
 
   // check next move is to an empty cell
   if ( maze[row][col] == '#' ||  maze[row][col] == '+' || maze[row][col] == '-' || maze[row][col] == '|') return false;
-  
+ 
   return true;
 }
 
@@ -156,13 +158,16 @@ string find_path(char** maze, const int height, const int width, const char star
   if ( row == 0 && col == 0 ){
     if ( !find_marker(start, maze, height, width, row, col) ) return "no solution";
     path = new char[height*width];
+    maze[row][col] = '#';
   }
 
   // initilaise parameters used
   int temp_row = row;
   int temp_col = col;
   string answer;
-  char direction[4] = {'N', 'S', 'E', 'W'};
+  vector<char> direction = {'N', 'E', 'W', 'S'};
+  random_shuffle ( direction.begin(), direction.end() );
+  
   char marker = '#';
   
   for ( int i = 0; i < 4; i++){
@@ -187,6 +192,8 @@ string find_path(char** maze, const int height, const int width, const char star
     char temp = maze[row][col];
     maze[row][col] = marker;
     path[index++] = direction[i];
+    //for ( int i = 0; i < 11; i++) cout << '\n';
+    print_maze(maze, height, width);
 
     // recursively call find_path
     answer = find_path(maze, height, width, start, end, row, col, path, index); 

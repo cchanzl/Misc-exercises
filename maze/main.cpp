@@ -74,7 +74,7 @@ int main() {
   deallocate_2D_array(maze, height);
   
   cout << "=================== Bonus Question =====================" << endl << endl;
-
+  /*
   // find the path from the entrance to the middle of the Hatfield House maze 
   maze = load_maze("hatfield.txt", height, width);
   assert(maze);
@@ -91,7 +91,7 @@ int main() {
   cout << endl;
 
   deallocate_2D_array(maze, height);
-
+  */
   // find the path from the middle to the exit of the Hatfield House maze 
   maze = load_maze("hatfield.txt", height, width);
   assert(maze);
