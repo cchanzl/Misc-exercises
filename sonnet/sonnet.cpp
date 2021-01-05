@@ -138,6 +138,7 @@ int count_words(string line){
   
 }
 
+// returns true if a word has vowels
 bool has_vowel(string word){
   
   const char* letter = word.c_str();
@@ -157,7 +158,9 @@ bool has_vowel(string word){
 
 // find the phonetic ending for the given word
 bool find_phonetic_ending(string word, char* phonetic_ending){
-   
+
+  const char* word2 = word.c_str();
+  
   // reset phonetic_ending array
   for ( int i = 0; i < 512; i++) phonetic_ending[i] = '\0';
 
@@ -174,7 +177,7 @@ bool find_phonetic_ending(string word, char* phonetic_ending){
       const char* line2 = line.c_str();
  
       get_word(line2, 1, output);
-      if ( output == word ){
+      if ( !strcmp(output, word2) ){ // convert string to C-string
 	phonetic = line; // extracting phonemes here
 	found = true;
 	break;
@@ -241,6 +244,9 @@ bool find_rhyme_scheme(const char* filename, char* scheme){
     *scheme = rhyming_letter(phonetic_ending);
     scheme++;
   }
+
+  in.close(); // close file
+  
   return true;
 }
 
@@ -252,11 +258,11 @@ string identify_sonnet(const char* filename){
   // return Unknown if cannot open file
   if ( !find_rhyme_scheme(filename, scheme) ) return "Unknown"; 
 
-  string shakespearean = "ababcdcdefefgg";
+  const char shakespearean[]{"ababcdcdefefgg"};
   string petrarch = "abbaabbacdcdcd";
   string spenserian = "ababbcbccdcdee";
 
-  if ( scheme == shakespearean ) return "Shakespearean";
+  if ( !strcmp(scheme, shakespearean) ) return "Shakespearean";
   if ( scheme == petrarch ) return "Petrarchan";
   if ( scheme == spenserian ) return "Spenserian";
 
