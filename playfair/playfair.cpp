@@ -21,8 +21,11 @@ void prepare(string input, char* output){
     letter++;
   }
   
-  if ( count % 2 != 0 ) *output = 'X'; 
-
+  if ( count % 2 != 0 ) {
+    *output = 'X';
+    output++;
+  }
+  *output = '\0';
 }
 
 // Prepare grid for Playfair encoding based on a codeword

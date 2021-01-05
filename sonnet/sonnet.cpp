@@ -205,13 +205,7 @@ bool find_phonetic_ending(string word, char* phonetic_ending){
   for ( int i = index; i <= count; i++){
     char phonemes[512];
     get_word(phonetic_char, i, phonemes);
-
-    int x(0);
-    while ( phonemes[x] != '\0' ){
-      *phonetic_ending = toupper(phonemes[x]);
-      phonetic_ending++;
-      x++;
-    }  
+    strcat(phonetic_ending, phonemes);
   }
   return true;
 }
