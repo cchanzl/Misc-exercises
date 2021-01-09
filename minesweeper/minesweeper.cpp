@@ -68,22 +68,15 @@ void initialise_board(char board[9][9]) {
 /* add your functions here */
 
 bool is_complete(char mine[9][9], char revealed[9][9]){
-  // check that all mines are marked correctly in revealed
-  for ( int r = 0; r < 9; r++){
-    for ( int c = 0; c < 9; c++){
-      if ( mine[r][c] == '*' && revealed[r][c] != '*' ) return false;
+  // check if any uncovered squares does not have a mine
+  for ( int r = 0; r < BOARD_LENGTH; r++){
+    for ( int c = 0; c < BOARD_LENGTH; c++){
+      if ( revealed[r][c] == '?' &&  mine[r][c] != '*' ) return false;
     }
   }
 
-  // check that there is no '?' left in revealed
-  for ( int r = 0; r < 9; r++){
-    for ( int c = 0; c < 9; c++){
-      if ( revealed[r][c] == '?' ) return false;
-    }
-  }
-
+  // return true, since all square that are not revealed have a mine
   return true;
-  
 }
 
 // return number of appearance a char appears around a cell
@@ -99,12 +92,14 @@ int count_around(char board[9][9], int row, int col, char target){
   int bot_left[2] = {row+1, col-1};
   int left[2] = {row, col-1};
 
-  int* around[8] = {top_left, top, top_right, right, bot_right, bottom, bot_left, left};
+  int* around[AROUND_SQUARE] = {top_left, top, top_right, right,
+				 bot_right, bottom, bot_left, left};
   int count(0);  
 
   // search for mines
-  for ( int i = 0; i < 8; i++){
-    if(around[i][0]>=0 && around[i][0]<=8 && around[i][1] >= 0 && around[i][1] <= 8){
+  for ( int i = 0; i < AROUND_SQUARE; i++){
+    if(around[i][0] >= 0 && around[i][0] <= AROUND_SQUARE &&
+       around[i][1] >= 0 && around[i][1] <= AROUND_SQUARE ){
       if ( board[around[i][0]][around[i][1]] == target ) count += 1;
     }
   }
@@ -174,13 +169,15 @@ MoveResult make_move(std::string position, char mines[9][9], char revealed[9][9]
     int bot_left[2] = {row+1, col-1};
     int left[2] = {row, col-1};
 
-    int* around[8] = {top_left, top, top_right, right, bot_right, bottom, bot_left, left};
+    int* around[AROUND_SQUARE] = {top_left, top, top_right, right,
+				  bot_right, bottom, bot_left, left};
 
     revealed[row][col] = ' ';
     //cout << position << " with this many mines: " << mine_count << endl;
   
-    for ( int i = 0; i < 8; i++){
-      if(around[i][0]>=0 && around[i][0]<=8 && around[i][1] >= 0 && around[i][1] <= 8){
+    for ( int i = 0; i < AROUND_SQUARE; i++){
+      if(around[i][0] >= 0 && around[i][0] <= AROUND_SQUARE &&
+	 around[i][1] >= 0 && around[i][1] <= AROUND_SQUARE){
 	if ( revealed[around[i][0]][around[i][1]] == '?' ) {
 	  string pos;
 	  pos.push_back(static_cast<char>(around[i][0] + 'A'));
@@ -196,7 +193,6 @@ MoveResult make_move(std::string position, char mines[9][9], char revealed[9][9]
 
   // return valid move
   return VALID_MOVE;
-
 }
 
 // updates row and col with the first empty cell found
@@ -212,11 +208,13 @@ void find_empty(char board[9][9], int& row, int& col){
   int bot_left[2] = {row+1, col-1};
   int left[2] = {row, col-1};
 
-  int* around[8] = {top_left, top, top_right, right, bot_right, bottom, bot_left, left};
+  int* around[AROUND_SQUARE] = {top_left, top, top_right, right,
+				bot_right, bottom, bot_left, left};
 
   // search for mines
-  for ( int i = 0; i < 8; i++){
-    if(around[i][0]>=0 && around[i][0]<=8 && around[i][1] >= 0 && around[i][1] <= 8){
+  for ( int i = 0; i < AROUND_SQUARE; i++){
+    if(around[i][0] >= 0 && around[i][0] <= AROUND_SQUARE &&
+       around[i][1] >= 0 && around[i][1] <= AROUND_SQUARE){
       if ( board[around[i][0]][around[i][1]] == '?' ){
 	row = around[i][0];
 	col = around[i][1];
@@ -232,8 +230,8 @@ bool find_safe_move(char revealed[9][9], char* move){
 
   for ( int i = 0; i < 512; i++ ) move[i] = '\0'; // flush move
   
-  for ( int row = 0; row < 9; row++){
-    for ( int col = 0; col < 9; col++){
+  for ( int row = 0; row < BOARD_LENGTH; row++){
+    for ( int col = 0; col < BOARD_LENGTH; col++){
       int count_flag(0); // count squares with '*'
       int count_empty(0); // count squares with '?'
       
@@ -266,12 +264,13 @@ bool find_safe_move(char revealed[9][9], char* move){
 	  return true;    
 	}
       }
+      
     }
   }
   return false;
 }
 
-void solve_board(char mines[9][9], char revealed[9][9], char* moves){
+void solve_board(char mines[9][9], char revealed[9][9], char* moves, int index){
   
   
   
