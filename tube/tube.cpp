@@ -141,12 +141,11 @@ bool get_symbol_position(char** map, const int height, const int width, const ch
     r = -1;
     c = -1;
     return false;
-    }
+  }
 
   // find target
   for ( int h = 0; h < height; h++){
     for (  int w = 0; w < width; w++){
-      //cout << h << w << " " << map[h][w] << endl;
       if ( map[h][w] == target ) {
 	r = h;
 	c = w;
@@ -210,18 +209,12 @@ int validate_route(char** map, const int height, const int width,
   
   // start_station must be a valid station
   char start = get_symbol_for_station_or_line(start_station);
-  //cout << start << endl;
-  if ( start == ' ' ) {
-    //cout << "test" << endl;
-    return -1;
-  }
+  if ( start == ' ' ) return -1;
+  
   // find start station coordinates
   int r, c;
-  char result =  get_symbol_position(map, height, width, start, r, c);
-  if ( result == ' ' ) {
-    //cout <<r <<  " test " << c << endl;
-    return -1;
-  }
+  if ( !get_symbol_position(map, height, width, start, r, c) ) return -1;
+  
   // initialise count for line change
   int count_line_change(0);
   char prev_line, current_line;
@@ -232,7 +225,7 @@ int validate_route(char** map, const int height, const int width,
   vector<int> visited;
   int position = r*width + c;
   visited.push_back(position);
-  //cout << position << " Original" << endl;
+
   // check input parameter route
   const char* direction = route.c_str();
   while ( *direction != '\0' ){
@@ -249,7 +242,6 @@ int validate_route(char** map, const int height, const int width,
     }
     
     const char * dir = direct.c_str();
-    //cout <<  string_to_direction(dir) << endl;
     if ( string_to_direction(dir) == 8 ) return -5;
 
     // make move
@@ -300,16 +292,12 @@ int validate_route(char** map, const int height, const int width,
 
     // check if off track
     if ( map[r][c] == ' ' ) return -6;
-    //cout << map [r][c] << endl;
 
-    // add coordination to visited vector
+    // check for backtracking
     int position = r*width + c;
-    //cout << position << "T" << visited.size() << endl;
     visited.push_back(position); // add to visited
     int size = visited.size();
-    //cout << visited[size-1] << "TEST" <<endl;
-    if ( visited[size-1] == visited[size-3] ) return -4;
-    
+    if ( visited[size-1] == visited[size-3] ) return -4; // error if backtracking    
    
     // check if reach a station
     if ( isalnum(map[r][c]) ) reach_station = 1;
@@ -364,16 +352,12 @@ int validate_route(char** map, const int height, const int width,
     std::cerr << "Error: Unable to open file" << std::endl;
     return ' ';
   }
-  //cout << final_stop << endl;
+
   string line;
   while(getline(in, line)){
-    //cout << line[0] << final_stop << endl;
     if (line[0] == final_stop){
-      int i(2); // skip first two char
-      while(line[i] != '\0'){
-	destination[i-2] = line[i];
-	i++;
-      }
+      const char* lineC = line.c_str();
+      strcpy(destination, lineC+2);
       break;
     }
   }
