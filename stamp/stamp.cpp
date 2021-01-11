@@ -155,7 +155,7 @@ bool make_header_helper(char* temp, char* temp2, int counter){
     header++;
   }
     
-  cout << temp << endl;
+  //cout << temp << endl;
 
   // convert header to SHA1
   //for ( int i = 0; i < size; i++) digest2[i] = '\0';
@@ -163,10 +163,7 @@ bool make_header_helper(char* temp, char* temp2, int counter){
   text_to_SHA1_digest(temp, digest2);
   int num_zeros =  leading_zeros(digest2);
   if ( num_zeros == 5 ) return true;
-  counter++;
-  
-  if ( counter > 10000000 ) return false;
-  return make_header_helper(temp, temp2, counter);
+  return false;
 }
 
 // returns false if file cant be read or counter exceeds 10 mn. return true otherwise
@@ -187,11 +184,13 @@ bool make_header(const std::string recipient, const std::string filename, char* 
   }
     
   // add counter
-  int counter(0);
   char* temp2 = header;
 
   // loop through each counter
-  return make_header_helper(temp, temp2, counter);
+  for ( int i = 0; i < 10000000; i++){
+    if (make_header_helper(temp, temp2, i) ) return true;
+  }
+  return false;
 }
 
 // check message received 
@@ -210,7 +209,7 @@ MessageStatus check_header(std::string email_address,
     index++;
   }
   if ( count_colon != 2 ) return INVALID_HEADER;
-  cout << position1 << " " << position2 << endl;
+  //cout << position1 << " " << position2 << endl;
   // check email address
   index = 0;
   while ( header[index] != ':' ){
