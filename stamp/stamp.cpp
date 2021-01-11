@@ -71,8 +71,11 @@ bool file_to_SHA1_digest(const std::string filename, char* digest){
 
   // opening file
   std::ifstream in(filename);
-  if (!in) return false;
- 
+  if (!in) {
+    in.close();
+    return false;
+  }
+  
   // count char in file
   string line;
   int count(0);
@@ -138,6 +141,34 @@ bool make_front(const std::string recipient, const std::string filename, char* h
   return true;
 }
 
+
+bool make_header_helper(char* temp, char* temp2, int counter){
+  int size = 41;
+  char digest2[size]; 
+  char* header = temp2;
+  string counter_S = to_string(counter);
+  const char* counter_C = counter_S.c_str();
+    
+  while ( *counter_C != '\0' ){
+    *header = *counter_C;
+    counter_C++;
+    header++;
+  }
+    
+  cout << temp << endl;
+
+  // convert header to SHA1
+  //for ( int i = 0; i < size; i++) digest2[i] = '\0';
+  
+  text_to_SHA1_digest(temp, digest2);
+  int num_zeros =  leading_zeros(digest2);
+  if ( num_zeros == 5 ) return true;
+  counter++;
+  
+  if ( counter > 10000000 ) return false;
+  return make_header_helper(temp, temp2, counter);
+}
+
 // returns false if file cant be read or counter exceeds 10 mn. return true otherwise
 bool make_header(const std::string recipient, const std::string filename, char* header){
   char* temp = header;
@@ -157,34 +188,10 @@ bool make_header(const std::string recipient, const std::string filename, char* 
     
   // add counter
   int counter(0);
-  int size = 41;
-  char digest2[size];
   char* temp2 = header;
 
   // loop through each counter
-  while ( counter < 10000000 ){
-    header = temp2;
-    string counter_S = to_string(counter);
-    const char* counter_C = counter_S.c_str();
-
-    while ( *counter_C != '\0' ){
-      *header = *counter_C;
-      counter_C++;
-      header++;
-    }
-    
-    //cout << temp << endl;
-
-    // convert header to SHA1
-    for ( int i = 0; i < size; i++) digest2[i] = '\0';
-  
-    text_to_SHA1_digest(temp, digest2);
-    int num_zeros =  leading_zeros(digest2);
-    if ( num_zeros == 5 ) return true;
-    counter++;
-  }
-  
-  return false;
+  return make_header_helper(temp, temp2, counter);
 }
 
 // check message received 
@@ -203,7 +210,7 @@ MessageStatus check_header(std::string email_address,
     index++;
   }
   if ( count_colon != 2 ) return INVALID_HEADER;
-
+  cout << position1 << " " << position2 << endl;
   // check email address
   index = 0;
   while ( header[index] != ':' ){
